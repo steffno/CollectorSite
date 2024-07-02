@@ -1,0 +1,19 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "https://www.univaq.it/f3i/swa/examples/track_schema.json",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "title",
+        "length"
+    ],
+    "properties": {
+        "title": {
+            "type": "string"
+        },
+
+        "length": {
+            "type": "number"
+        }
+    }
+}

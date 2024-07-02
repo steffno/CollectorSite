@@ -1,0 +1,305 @@
+/* ####################################################
+*
+* Operations_impl, path: ./specifica
+* 
+* @author: Stefano Fattore
+*
+* ####################################################*/
+
+
+/*
+* Important!
+*
+* Common types -> API's get/response in JSON data structure
+*
+*/
+
+
+
+/*
+*
+* BASE URL DEFINITION
+*
+*/
+BASE_URL := "https://css.org/rest"
+
+
+
+
+/*
+*
+* !!! OPERATIONS IMPL START HERE !!!
+* 
+* Stucture define
+* {
+*     -METHOD-> [GET, POST, PUT, DELETE, ...], EMIT URL -> BASE_URL + <url>
+*	  -OPT_PARAMS
+*	  -NON-OPT_PARAMS 
+*     -INPUT
+*     -OUTPUT
+* }
+*
+*/
+
+// --> OP NO.1 aka 'Login/logout con username e password' <--
+
+	// OP NO.1.1 aka login
+	{
+		METHOD:
+			POST BASE_URL/auth//login
+
+		OPT_PARAMS:
+			null
+
+		NON-OPT_PARAMS:
+			null
+		
+		INPUT:
+			null
+
+		OUTPUT:
+			null
+	}
+
+	// OP NO.1.2 aka logout
+	{
+		METHOD:
+			GET/DELETE BASE_URL/auth/logout
+		
+		OPT_PARAMS:
+			null
+
+		NON-OPT_PARAMS:
+			null
+		
+		INPUT:
+			null
+
+		OUTPUT:
+			null
+	}
+
+
+// --> OP NO.2 aka 'Elenco collezioni (personali) dell’utente' <--
+	{
+		/*
+		* 
+		* Non mettiamo l'id utente perchè sarà preso dal sistema di auth
+		* 
+		* We do not put the user id because it will be taken from the auth system
+		*
+		*/
+
+		METHOD:
+			GET BASE_URL/collections/{COLLECTIONTYPE}
+			
+		OPT_PARAMS:
+			from=<?>&to=<?> -> for paging
+
+		NON-OPT_PARAMS:
+			{COLLECTIONTYPE} -> [mycollection]
+		
+		INPUT:
+			null
+
+		OUTPUT:
+			{200 OK}        => Collection objects list encoded in JSON data structure 
+			{404 NOT FOUND} => Error associated with an invalid id
+	}
+
+
+// --> OP NO.3 aka 'Elenco collezioni condivise con un utente' <--
+	{
+		METHOD:
+			GET BASE_URL/collections/{COLLECTIONTYPE}/{OUID}
+			
+		OPT_PARAMS:
+			from=<?>&to=<?> -> for paging
+
+		NON-OPT_PARAMS:
+			{COLLECTIONTYPE} -> [sharedcollection]
+			{OUID} -> collection id associated to another user
+		
+		INPUT:
+			null
+
+		OUTPUT:
+			{200 OK}        => Collection objects list encoded in JSON data structure 
+			{404 NOT FOUND} => Error associated with an invalid id
+	}
+
+
+// --> OP NO.4 aka 'Elenco dei dischi in una collezione (accessibile dall’utente)' <--
+	{
+		METHOD:
+			GET BASE_URL/collections/{COLLECTIONTYPE}/<ID>/records
+			
+		OPT_PARAMS:
+			from=<?>&to=<?> -> for paging
+
+		NON-OPT_PARAMS:
+			{COLLECTIONTYPE} -> [mycollection, sharedcollection, publiccollection]
+			<ID> -> collection id
+		
+		INPUT:
+			null
+
+		OUTPUT:
+			{200 OK}        => record objects list encoded in JSON data structure 
+			{404 NOT FOUND} => Error associated with an invalid id
+	}
+
+
+
+// --> OP NO.5 aka 'Dettagli singolo disco contenuto in una collezione' <--
+	{
+		METHOD:
+			GET BASE_URL/collections/{COLLECTIONTYPE}/<ID1>/records/<ID2>
+			
+		OPT_PARAMS:
+			null
+
+		NON-OPT_PARAMS:
+			{COLLECTIONTYPE} -> [mycollection, sharedcollection, publiccollection]
+			<ID1> -> collection id associated to user
+			<ID2> -> record id in collection
+		
+		INPUT:
+			null
+
+		OUTPUT:
+			{200 OK}        => record details object encoded in JSON data structure 
+			{404 NOT FOUND} => Error associated with an invalid ids
+	}
+
+
+// --> OP NO.6 aka 'Inserimento di un nuovo disco in una delle collezioni dell’utente' <--
+	{
+		METHOD:
+			POST BASE_URL/collections//<ID>/newrecord
+			
+		OPT_PARAMS:
+			null
+
+		NON-OPT_PARAMS:
+			<ID> -> collection id associated to user
+		
+		INPUT:
+			record structure
+
+		OUTPUT:
+			{201 CREATED} => REDIRECT USER TO COLLECTION PAGE
+	}
+
+
+// --> OP NO.7 aka 'Ricerca di un disco (in base a vari criteri) tra le collezioni personali, tra le collezioni condivise o tra quelle pubbliche (tre endpoint diversi)' <--
+	{
+		METHOD:
+			GET BASE_URL/collections/{COLLECTIONTYPE}/records
+			
+		OPT_PARAMS:
+			from=<?>&to=<?> -> for paging
+			name=<?> 		-> record name
+			date=<?>		-> publication date
+			author=<?>      -> author of the record
+
+		NON-OPT_PARAMS:
+			{COLLECTIONTYPE} -> [mycollection, sharedcollection, publiccollection]
+		
+		INPUT:
+			null
+
+		OUTPUT:
+			{200 OK} 		=> record object encoded in JSON data structure 
+			{404 NOT FOUND} => No record found
+	}
+
+
+// --> OP NO.8 aka 'Elenco di tutti gli autori presenti nel sistema' <--
+	{
+		METHOD:
+			GET BASE_URL/authors
+			
+		OPT_PARAMS:
+			from=<?>&to=<?> -> for paging
+
+		NON-OPT_PARAMS:
+			null
+		
+		INPUT:
+			null
+
+		OUTPUT:
+			{200 OK} => Author objects list encoded in JSON data structure 
+	}
+
+
+// --> OP NO.9 aka 'Elenco di tutti i dischi di un certo autore presenti nelle collezioni pubbliche' <--
+	{
+		METHOD:
+			GET BASE_URL/collections/{COLLECTIONTYPE}/records/{AUTHORNAME}
+			
+		OPT_PARAMS:
+			from=<?>&to=<?> -> for paging
+
+		NON-OPT_PARAMS:
+			{COLLECTIONTYPE} -> [publiccollection]
+			{AUTHORNAME}	 -> author name
+		
+		INPUT:
+			null
+
+		OUTPUT:
+			{200 OK} 		=> record objects list encoded in JSON data structure 
+			{404 NOT FOUND} => No author/record found
+	}
+
+
+// --> OP NO.10 aka 'Aggiornamento di un disco in una collezione personale dell’utente' <--
+	{
+		METHOD:
+			POST BASE_URL/collections/{COLLECTIONTYPE}/<ID1>/modifyrecord
+			
+		OPT_PARAMS:
+			null
+
+		NON-OPT_PARAMS:
+			{COLLECTIONTYPE} -> [mycollection, sharedcollection, publiccollection]
+			<ID1> -> collection id associated to user
+		
+		INPUT:
+			record structure
+
+		OUTPUT:
+			{200 OK} => REDIRECT USER TO COLLECTION PAGE
+	}
+
+
+// --> OP NO.11 aka 'Estrazione di alcune statistiche (si veda la specifica del progetto Collectors Site per alcuni suggerimenti) dalla collezione di un utente' <--
+	{
+		/*
+		*
+		* This description does not specify how the statistics are processed, nor the filtering parameters.
+		* A JSON data structure will be returned with all available statistics 
+		* (Number of records, Number of records by author, Number of records by genre, ...)		
+		*
+		*/
+		METHOD:
+			GET BASE_URL/collections/{COLLECTIONTYPE}/<ID>/stats
+			
+		OPT_PARAMS:
+			null
+
+		NON-OPT_PARAMS:
+			{COLLECTIONTYPE} -> [mycollection]
+			<ID> -> collection id associated to user
+		
+		INPUT:
+			null
+
+		OUTPUT:
+			{200 OK} 		=> stats objects list encoded in JSON data structure 
+			{404 NOT FOUND} => no record collection statistics
+	}
+
+

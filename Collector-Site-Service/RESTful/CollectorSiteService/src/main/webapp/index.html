@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>CollectorSiteService</title>	
+        <link rel="icon" href="img/favicon.png">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="js/jquery-1.12.1.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="x100xauto banner_part rounded text-center padding_bottom_25 d-flex align-items-center justify-content-center">
+            <h3 class="white-text">Collector Site Service</h3>
+        </div>
+        <div>
+            <section class="login_part padding_bottom_100">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 col-md-6">
+                            <div style="text-align: center">
+                                <h4>Operazioni senza login</h4>
+                            </div>
+                            <div class="login_part_text text-center" style="width: 100%">
+                                <div class="login_part_text_iner">
+                                    <ul class="nav nav-pills">
+                                        <li class="nav-item">
+                                            <a id="no-logged-cleaner" class="nav-link" title="Pulisce la schermata">Clean</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a id="no-logged-authors" class="nav-link" title="Elenco di tutti gli autori presenti nel sistema">Authors</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a id="no-logged-au-rec" class="nav-link" title="Elenco di tutti i dischi di un certo autore presenti nelle collezioni pubbliche">AuthorRecords</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a id="no-logged-records" class="nav-link" title="Elenco dei dischi in una collezione (Public)">PublicRecords</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a id="no-logged-record" class="nav-link" title="Dettagli singolo disco contenuto in una collezione (Public)">Record</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a id="no-logged-search" class="nav-link padding_top_10" title="Ricerca di un disco tra quelle pubbliche">Search</a>
+                                        </li>
+                                    </ul>
+                                    <div class="">
+                                        <h6 id="id-area0" hidden></h6>
+                                    </div>
+                                    <div class="">
+                                        <textarea style="white-space: nowrap; resize: none; margin-top: 3%" class="form-control" id="no-logged-path" rows="2" readonly></textarea>
+                                        <textarea style="resize: none; margin-top: 3%" class="form-control" id="no-logged-res" rows="25" readonly></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="login-area" class="col-lg-6 col-md-6">
+                            <div style="text-align: center">
+                                <h4 id="label-login">Esegui il login per le altre operazioni</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+
+        <script src="js/index.impl.js"></script>
+
+    </body>
+</html>

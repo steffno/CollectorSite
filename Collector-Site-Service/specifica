@@ -1,0 +1,12 @@
+Operazioni:
+	FATTO 1. Login/logout con username e password
+	FATTO 2. Elenco collezioni (personali) dell’utente (qui e successivamente con “utente” intendiamo quello autenticato)
+	FATTO 3. Elenco collezioni condivise con un utente
+	FATTO 4. Elenco dei dischi in una collezione (accessibile dall’utente)
+	FATTO 5. Dettagli singolo disco contenuto in una collezione
+	FATTO 6. Inserimento di un nuovo disco in una delle collezioni dell’utente
+	FATTO 7. Ricerca di un disco (in base a vari criteri) tra le collezioni personali, tra le collezioni condivise o tra quelle pubbliche (tre endpoint diversi)
+	FATTO 8. Elenco di tutti gli autori presenti nel sistema
+	FATTO 9. Elenco di tutti i dischi di un certo autore presenti nelle collezioni pubbliche
+	FATTO 10. Aggiornamento di un disco in una collezione personale dell’utente
+	FATTO 11. Estrazione di alcune statistiche (si veda la specifica del progetto Collectors Site per alcuni suggerimenti) dalla collezione di un utente

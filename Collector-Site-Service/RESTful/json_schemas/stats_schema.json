@@ -1,0 +1,36 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "https://www.univaq.it/f3i/swa/examples/stats_schema.json",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "recordno",
+        "authorassocno",
+        "genreassocno"
+    ],
+    "properties": {
+        "recordno": {
+            "type": "integer"
+        },
+
+        "authorassocno": {
+            "type": "array",
+            "author": {
+                "$ref": "https://www.univaq.it/f3i/swa/examples/author_schema.json"
+            }
+        },
+
+        "genreassocno": {
+            "type": "array",
+            "genre": {
+                "genrename": {
+                    "type": "string"
+                },
+
+                "count": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}

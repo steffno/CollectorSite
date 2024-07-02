@@ -1,0 +1,509 @@
+openapi: 3.0.1
+
+info:
+  title: Collector Site Service - CS
+  contact:
+    email: super-gattino@student.univaq.it
+  version: '1.0'
+  
+servers:
+  - url: 'https://localhost:8080/'
+  
+paths:
+  # 1.1
+  '/rest/auth/login':
+    post:
+      summary: do login
+      operationId: login
+      tags: 
+        - Auth  
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: logged successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+          headers:
+            Authorization:
+              schema:
+                type: string
+                pattern: 'Bearer [a-z0-9A-Z-]+'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+       
+  # 1.2   
+  '/rest/auth/logout':
+    delete:
+      summary: do logout
+      operationId: logout
+      tags: 
+        - Auth 
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: successful logout
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'          
+        '500':
+          $ref: '#/components/responses/ServerError'  
+
+  # 2
+  '/rest/collections/{COLLECTIONTYPE}':
+    get:
+      summary: get my collections
+      operationId: getCollections
+      tags: 
+        - Collections
+      parameters:
+        - $ref: '#/components/parameters/COLLECTIONTYPE'
+        - $ref: '#/components/parameters/pagingFrom'
+        - $ref: '#/components/parameters/pagingTo'
+      responses:
+        '200':
+          description: user collections list
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/collectionListSchema'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  
+  # 3              
+  '/rest/collections/{COLLECTIONTYPE}/{OUID}':
+    get:
+      summary: get shared collection with another one user
+      operationId: getSharedCollections
+      tags: 
+        - Collections
+      parameters:
+        - $ref: '#/components/parameters/COLLECTIONTYPE'
+        - $ref: '#/components/parameters/OUID'
+        - $ref: '#/components/parameters/pagingFrom'
+        - $ref: '#/components/parameters/pagingTo'
+      responses:
+        '200':
+          description: user collections list
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/collectionListSchema'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  
+  # 4     
+  '/rest/collections/{COLLECTIONTYPE}/{COLLECTIONID}/records':
+    get:
+      summary: get collection records
+      operationId: getCollectionRecords
+      tags: 
+        - Records
+      parameters:
+        - $ref: '#/components/parameters/COLLECTIONTYPE'
+        - $ref: '#/components/parameters/COLLECTIONID'
+        - $ref: '#/components/parameters/pagingFrom'
+        - $ref: '#/components/parameters/pagingTo'
+      responses:
+        '200':
+          description: user collections list
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recordListSchema'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  
+  # 5     
+  '/rest/collections/{COLLECTIONTYPE}/{COLLECTIONID}/records/{RECORDID}':
+    get:
+      summary: get collection record info
+      operationId: getCollectionRecordInfo
+      tags: 
+        - Records
+      parameters:
+        - $ref: '#/components/parameters/COLLECTIONTYPE'
+        - $ref: '#/components/parameters/COLLECTIONID'
+        - $ref: '#/components/parameters/RECORDID'
+        - $ref: '#/components/parameters/pagingFrom'
+        - $ref: '#/components/parameters/pagingTo'
+      responses:
+        '200':
+          description: user collections list
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recordSchema'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # 6           
+  '/rest/collections/{UID}/newrecord':
+    post:
+      summary: new record insert into user collection
+      operationId: setCollectionRecord
+      tags: 
+        - Records
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/recordSchema'
+      parameters:
+        - $ref: '#/components/parameters/UID'
+        
+      responses:
+        '201':
+          description: insert confirm 
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recordCreatedSchema'
+        '400':
+          description: bad request
+         
+  # 7 
+  '/rest/collections/{COLLECTIONTYPE}/records':
+    get:
+      summary: get record by name, date, author
+      operationId: getRecord
+      tags: 
+        - Records
+      parameters:
+        - $ref: '#/components/parameters/COLLECTIONTYPE'
+        - $ref: '#/components/parameters/nameQParam'
+        - $ref: '#/components/parameters/dateQParam'
+        - $ref: '#/components/parameters/authorQParam'
+      responses:
+        '200':
+          description: record by name, date,
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recordSchema'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  
+  # 8
+  '/rest/authors':
+    get:
+      summary: get all authors
+      operationId: getAuthors
+      tags: 
+        - Authors
+      parameters:
+        - $ref: '#/components/parameters/pagingFrom'
+        - $ref: '#/components/parameters/pagingTo'
+      responses:
+        '200':
+          description: get authors
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/authorsSchema'
+                
+  # 9
+  '/rest/collections/{COLLECTIONTYPE}/records/{AUTHORNAME}':
+    get:
+      summary: get all author records
+      operationId: getAuthorRecords
+      tags: 
+        - Records
+      parameters:
+        - $ref: '#/components/parameters/COLLECTIONTYPE'
+        - $ref: '#/components/parameters/AUTHORNAME'
+        - $ref: '#/components/parameters/pagingFrom'
+        - $ref: '#/components/parameters/pagingTo'
+      responses:
+        '200':
+          description: get author records
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recordListSchema'
+        '404':
+          $ref: '#/components/responses/NotFound'      
+                
+  # 10
+  '/rest/collections/{COLLECTIONID}/modifyrecord':
+    post:
+      summary: modify record into user collection
+      operationId: updateCollectionRecord
+      tags: 
+        - Records
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/recordSchema'
+      parameters:
+        - $ref: '#/components/parameters/COLLECTIONTYPE'
+        - $ref: '#/components/parameters/COLLECTIONID'
+        
+      responses:
+        '200':
+          description: modify confirmed 
+          
+        '400':
+          description: bad request
+          
+  # 11
+  '/rest/collections/{COLLECTIONTYPE}/{COLLECTIONID}/stats':
+    get:
+      summary: get stats for user collection
+      operationId: getCollectionStats
+      tags: 
+        - Records
+      parameters:
+        - $ref: '#/components/parameters/COLLECTIONTYPE'
+        - $ref: '#/components/parameters/COLLECTIONID'
+
+      responses:
+        '200':
+          description: get collection stats
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/statsSchema'
+        '404':
+          $ref: '#/components/responses/NotFound'    
+                
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: internalToken
+      
+  responses:
+      ServerError:
+        description: server error
+        content:
+          text/plain:
+            schema:
+              type: string
+              example: '5xx internal server error'
+              
+      UnauthorizedError:
+        description: no bearer token 
+        
+      NotFound:
+        description: not found
+        content:
+          text/plain:
+            schema:
+              type: string
+              example: "404 not found"
+  
+  schemas:
+    collectionSchema:
+      type: object
+      properties:
+        name: 
+          type: string
+        recordCount: 
+          type: integer
+        records: 
+          type: array
+          items:
+            $ref: '#/components/schemas/recordSchema'
+        shared:
+          type: array
+          items:
+            type: integer
+        type:
+          type: string
+          
+    collectionListSchema:
+      type: array
+      items: 
+        $ref: '#/components/schemas/collectionSchema'
+        
+    trackSchema:
+      type: object
+      properties:
+        title: 
+          type: string
+        length: 
+          type: number
+          
+    recordSchema:
+      type: object
+      properties:
+        title: 
+          type: string
+        trackCount: 
+          type: integer
+        author:
+          $ref: '#/components/schemas/authorSchema'
+        date: 
+          type: string
+          example: "YYYY-MM-DD"
+        length:
+          type: number
+        tracks:
+          type: array
+          items:
+            $ref: '#/components/schemas/trackSchema'
+            
+    recordListSchema:
+      type: array
+      items: 
+        $ref: '#/components/schemas/recordSchema'
+        
+    recordCreatedSchema:
+      type: object
+      properties:
+        msg:
+          type: string
+          
+    authorSchema:
+      type: object
+      properties:
+        name:
+          type: string
+        recordno:
+          type: integer
+        isband:
+          type: boolean
+        bio:
+          type: string
+          
+    authorsSchema:
+      type: array
+      items: 
+        $ref: '#/components/schemas/authorSchema'
+  
+    statsSchema:
+      type: object
+      properties:
+        recordno:
+          type: integer
+        authors:
+          type: array
+          items:
+            $ref: '#/components/schemas/authorsSchema'
+        genreno:
+          type: array
+          items:
+            $ref: '#/components/schemas/genreSchema'
+            
+    genreSchema:
+      type: object
+      properties:
+        name:
+          type: string
+        count:
+          type: integer
+  
+  parameters:
+    pagingFrom:
+      name: from
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: uint16
+        minimum: 0
+        default: 0
+        
+    pagingTo:
+      name: to
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: uint16
+        minimum: 0
+        default: 10
+        
+    COLLECTIONTYPE:
+      name: COLLECTIONTYPE
+      in: path
+      required: true
+      schema:
+        type: string
+      description: '[mycollection, sharedcollection, publiccollection]'
+      
+      
+    AUTHORNAME:
+      name: AUTHORNAME
+      in: path
+      required: true
+      schema:
+        type: string
+
+    OUID:
+      name: OUID
+      description: Other User Identification
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: uint32
+        
+    UID:
+      name: UID
+      description: User Identification
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: uint32
+        
+    COLLECTIONID:
+      name: COLLECTIONID
+      description: Collection Identification
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: uint32
+        
+    RECORDID:
+      name: RECORDID
+      description: Record Identification
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: uint32
+        
+    nameQParam:
+      name: name
+      in: query
+      required: false
+      schema:
+        type: string
+        
+    dateQParam:
+      name: date
+      in: query
+      required: false
+      schema:
+        type: string
+        
+    authorQParam:
+      name: author
+      in: query
+      required: false
+      schema:
+        type: string    
+        
+        

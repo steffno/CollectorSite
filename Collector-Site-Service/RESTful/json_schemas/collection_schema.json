@@ -1,0 +1,37 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "https://www.univaq.it/f3i/swa/examples/collection_schema.json",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "nome",
+        "recordcount",
+        "records",
+        "shared",
+        "type"
+    ],
+    "properties": {
+        "nome": {
+            "type": "string"
+        },
+
+        "recordcount": {
+            "type": "integer"
+        },
+
+        "records": {
+            "type": "array",
+            "record": {
+                "$ref": "https://www.univaq.it/f3i/swa/examples/record_schema.json"
+            }
+        },
+
+        "shared": {
+            "type": "array"
+        },
+
+        "type": {
+            "type": "enum"
+        }
+    }
+}
